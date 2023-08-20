@@ -3,12 +3,13 @@ Allows users to create groups, edit their profiles, manage their groups (edit gr
 python -m uvicorn server:app --reload to start the server, localhost:8000/docs for documentation.
 Main.py and login.kv must be in the same folder.
 
-![login](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/96dbca88-7edb-4718-9858-3691831cc05b)
 
-![ecran1](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/a3746138-a688-4c6b-adbe-0c57fa820db7)
+![login](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/e244eb8e-e1b0-45e0-941b-4d2386b8fe46)
 
-![ecran2](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/ad372403-3925-4e0f-8a3a-0b7aee959790)
+![ecran1](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/ab465a20-1fcc-441e-9404-6bfe762fd6ac)
 
-![chat](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/7d830587-273c-4df4-9117-9cf758bcd986)
+![ecran2](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/6c65cec7-d29b-462c-a764-1e2248c8361b)
 
-![memberii](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/de08ba8a-c4a9-4c06-af7a-62c36ed088b8)
+![chat](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/60800d90-450b-4943-a6f4-92ae434e295c)
+
+![memberii](https://github.com/ccc909/Copie_AplicatieProgramming/assets/57506761/3c7e4ae3-d591-40f7-a0c2-cef3b77f22f0)
