@@ -1,0 +1,11 @@
+fastapi
+kivy[base]
+kivymd
+plyer
+pydantic
+pyrebase
+Pyrebase4
+websocket_client
+regex
+uvicorn
+httpx

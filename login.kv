@@ -1,0 +1,446 @@
+WindowManager:
+    LoginWindow:
+    RegisterWindow:
+    FirstLoginSetup:
+    Main:
+    ListItem:
+    MyList:
+
+<MyList>
+    name:"mylist"
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing:0
+        MDTopAppBar
+            right_action_items: [["pencil", lambda x: app.callback()],["dots-vertical", lambda x: app.callback()]]
+            left_action_items: [["arrow-left", lambda _: app.mainscreen()]]
+        Widget:
+
+<ChatBubble>
+    adaptive_height: True
+    padding: [dp(8), dp(8)]
+    text_color: 1, 1, 1, 1
+    text_size: self.width, None
+
+    canvas.before:
+        Color:
+            rgba:
+                self.theme_cls.primary_dark if self.send_by_user \
+                else self.theme_cls.primary_color
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius:
+                [dp(8), dp(8), (dp(-5), dp(5)), dp(8)] if self.send_by_user \
+                else [(dp(-5), dp(5)), dp(8), dp(8), dp(8)]
+
+
+<ListItem>
+    name:"listitem"
+    MDBoxLayout:
+        id: chatview
+        orientation: 'vertical'
+        spacing:0
+
+        MDTopAppBar
+            id: topbar
+            right_action_items: [["dots-vertical", lambda x: app.callback()]]
+            left_action_items: [["arrow-left", lambda _: app.mainscreen()]]
+
+        MDTabs:
+            id: tab_list
+            tab_hint_x: True
+            on_tab_switch: app.on_tab_switch(*args)
+            Tab:
+                id: chat
+                title: "Chat/Announcements"
+                content_text: f"This is an example text for {self.title}"
+                BoxLayout:
+                    orientation: 'vertical'
+                    RecycleView:
+                        id: chat_rv
+                        data: app.chat_logs
+                        viewclass: "ChatBubble"
+                        RecycleBoxLayout:
+                            id: box
+                            padding: dp(10)
+                            spacing: dp(15)
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_size[1]
+                            default_size_hint: .8, None
+                            default_size: None, None
+                    TextInput:
+                        id: field
+                        hint_text: "Write your message"
+                        multiline: True
+                        cursor_color: app.theme_cls.primary_color
+                        padding: dp(7)
+                        size_hint_y: None
+                        height: dp(55)
+                        background_active: "assets/images/transparent.png"
+                        background_normal: "assets/images/transparent.png"
+                        canvas.before:
+                            Color:
+                                rgba: 0.5, 0.5, 0.5, 0.5
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                            Color:
+                                rgba:
+                                    self.foreground_color if self.text \
+                                    else (0.5, 0.5, 0.5, 0.5)
+                MDFloatingActionButton:
+                    id: send
+                    icon: "send"
+                    pos_hint: {"center_x": .9}
+                    y: dp(55)-(self.width/2)
+                    on_release: app.send(field.text.strip())
+                    elevation: dp(0)
+                MDFloatingActionButton:
+                    icon: "chevron-double-down"
+                    font_size: sp(20)
+                    mode: "outlined"
+                    pos_hint: {"center_x": .9}
+                    y: dp(55)+(self.width)
+                    opacity: 1 if self.show else 0
+                    disabled: False if self.show else True
+                    on_release: app.scroll_to_bottom()
+                    show:
+                        True if chat_rv.height < box.height and chat_rv.scroll_y > 0 \
+                        else False
+            Tab:
+                id: members
+                title: "Members"
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    MDList:
+                        size: self.size
+                        id: group_members
+
+
+<LoginWindow>
+    name:"login"
+    MDCard:
+        id: login_card
+        size_hint: None, None
+        size: 300, 400
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        elevation: 8
+        padding: 25
+        spacing: 25
+        orientation: 'vertical'
+
+        MDLabel:
+            id: welcome_label
+            text: "StudyBuddy"
+            font_size: 40
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: 15
+
+        MDTextField:
+            mode: "round"
+            id: user
+            hint_text: "username"
+            icon_right: "account"
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+
+        MDTextField:
+            mode: "round"
+            id: password
+            hint_text: "password"
+            icon_right: "eye-off"
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+            password: True
+        MDLabel:
+            halign: 'center'
+            id: error_text
+            text: ''
+            theme_text_color: 'Error'
+            font_size : 16
+            opacity: 0
+        MDRoundFlatButton:
+            text: "LOG IN"
+            font_size: 12
+            pos_hint: {"center_x": 0.5}
+            on_press: app.logger()
+
+        MDRoundFlatButton:
+            text: "REGISTER"
+            font_size: 12
+            pos_hint: {"center_x": 0.5}
+            on_press: app.register()
+
+        Widget:
+            size_hint_y: None
+            height: 10
+
+<RegisterWindow>
+    name: "register"
+    MDCard:
+        size_hint: None, None
+        size: 300, 400
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        elevation: 10
+        padding: 25
+        spacing: 25
+        orientation: 'vertical'
+
+        MDLabel:
+            id: welcome_label1
+            text: "REGISTER"
+            font_size: 40
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: 15
+
+        MDTextField:
+            mode: "round"
+            id: reg_user
+            hint_text: "email"
+            icon_right: "account"
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+
+        MDTextField:
+            mode: "round"
+            id: reg_password
+            hint_text: "password"
+            icon_right: "eye-off"
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+            password: True
+
+        MDLabel:
+            halign: 'center'
+            id: reg_error_text
+            text: ''
+            theme_text_color: 'Error'
+            font_size : 16
+            opacity: 0
+
+        MDRoundFlatButton:
+            text: "NEXT"
+            font_size: 12
+            pos_hint: {"center_x": 0.5}
+            on_press: app.register_button_press()
+
+        MDRoundFlatButton:
+            text: "BACK"
+            font_size: 12
+            pos_hint: {"center_x": 0.5}
+            on_press: app.reg_back()
+
+
+
+<FirstLoginSetup>
+    name:"loginsetup"
+    BoxLayout:
+        size_hint: None, None
+        size: 300, 480
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        elevation: 10
+        padding: 25
+        spacing: 25
+        orientation: 'vertical'
+        id: current
+        spacing: dp(20)
+        canvas.before:
+            Color:
+                rgba: (1,1,1, 1)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        MDLabel:
+            id: ls_banner
+            text: "Please complete your profile"
+            font_size: 20
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: 15
+            color: "black"
+        MDLabel:
+            id: ls_banner
+            text: "Display Name"
+            font_size: 20
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: 0
+            color: "black"
+        MDTextField:
+            mode: "round"
+            id: username
+            hint_text: "username"
+            icon_right: "account"
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+        MDLabel:
+            id: ls_banner
+            text: "Field you are studying in"
+            font_size: 20
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: 0
+            color: "black"
+        MDTextField:
+            mode: "round"
+            id: study_field
+            hint_text: "field"
+            icon_right: "school"
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+        MDLabel:
+            id: ls_banner
+            text: "Birth date"
+            font_size: 20
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: 0
+            color: "black"
+        BoxLayout:
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            orientation: 'horizontal'
+            MDTextField:
+                mode: "round"
+                id: date
+                text: ""
+                hint_text: "year-month-day"
+                icon_right: "calendar"
+                size_hint_x: None
+                width: 200
+                font_size: 18
+                pos_hint: {"center_x": 0.5}
+            MDRoundFlatButton:
+                halign: 'center'
+                size_hint_y: None
+                padding_y: 50
+                text: "Pick date"
+                font_size: 10
+                pos_hint: {"center_x": 0.5}
+                on_press: app.show_date_picker()
+        MDRoundFlatButton:
+            text: "FINISH"
+            font_size: 12
+            pos_hint: {"center_x": 0.5}
+            on_press: app.finish_login()
+
+<Main>
+    name:'main'
+    MDBottomNavigation:
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'Find groups'
+            icon: 'magnify'
+            on_tab_release: app.populateList()
+            MDBoxLayout:
+                orientation: "vertical"
+                MDTopAppBar:
+                    title: 'StudyBuddy'
+                MDScrollView:
+                    MDList:
+                        id:group_list
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'My groups'
+            icon: 'account-group'
+            on_tab_release: app.populate_myList()
+            MDBoxLayout:
+                orientation: "vertical"
+                MDTopAppBar:
+                    right_action_items: [["plus", lambda x: app.show_confirmation_dialog()]]
+                MDScrollView:
+                    id:test
+                    MDList:
+                        id:group_list1
+
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'My account'
+            icon: 'account'
+            on_tab_release: app.populate_profile()
+            BoxLayout:
+                spacing: 20
+                orientation: 'vertical'
+                AnchorLayout:
+                    id: avatar_image
+                    canvas:
+                        Color:
+                            rgb: 1, 1, 1
+                        Ellipse:
+                            group: 'a'
+                            pos: self.center_x-100 , 300
+                            size: 200 , 200
+                            source: ''
+                            angle_start: 0
+                            angle_end: 360
+                            on_release: print("egg")
+                MDRoundFlatButton:
+                    text: "UPLOAD"
+                    font_size: 12
+                    pos_hint: {"center_x": 0.5}
+                    on_press: app.file_chooser()
+                MDTextField:
+                    mode: "round"
+                    id: username_edit
+                    text: ""
+                    hint_text: "username"
+                    icon_right: "account"
+                    size_hint_x: None
+                    width: 200
+                    font_size: 18
+                    pos_hint: {"center_x": 0.5}
+                MDTextField:
+                    mode: "round"
+                    id: date_edit
+                    text: ""
+                    hint_text: "year-month-day"
+                    icon_right: "calendar"
+                    size_hint_x: None
+                    width: 200
+                    font_size: 18
+                    pos_hint: {"center_x": 0.5}
+                MDTextField:
+                    mode: "round"
+                    id: studying_at_edit
+                    text: ""
+                    hint_text: "studying at"
+                    icon_right: "school"
+                    size_hint_x: None
+                    width: 200
+                    font_size: 18
+                    pos_hint: {"center_x": 0.5}
+                MDRoundFlatButton:
+                    text: "SAVE"
+                    font_size: 12
+                    pos_hint: {"center_x": 0.5}
+                    on_press: app.saveProfile()
+                MDRoundFlatButton:
+                    text: "LOG OUT"
+                    font_size: 12
+                    pos_hint: {"center_x": 0.5}
+                    on_press: app.logout()
+
